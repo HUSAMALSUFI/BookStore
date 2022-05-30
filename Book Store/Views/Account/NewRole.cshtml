@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model VmRoleModel
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+@section Head{
+    <link href="~/css/styles.css" rel="stylesheet" />
+}
+@section Body{
+    <form method="post">
+        <section class="page-section" style="margin-top:25px;padding-top:10px;">
+            <div class="container-fluid">
+         @*  <button type="button" class="btn btn-primary btn-xl text-uppercase" data-bs-toggle="modal" data-bs-target="#exampleModal">New Role</button>*@
+                <div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" style="margin-top:155px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">New Role</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Country Name:</label>
+                                            <input type="text" class="form-control" asp-for="roleModel.Name">
+                                            <span asp-validation-for="roleModel.Name"></span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" asp-action="SaveRole">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                        New Role
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover table-striped" style="margin-top:50px">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Role Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @foreach (IdentityRole item in Model.liRoles)
+                                {
+                                    <tr>
+                                        <td><img class="mx-auto rounded-circle" src="~/Images/Role.png" alt="..." style="width:80px;height:80px;" /></td>
+                                        <td>@item.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+}

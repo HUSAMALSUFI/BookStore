@@ -1,0 +1,203 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Book_Store.Data
+@inject SignInManager<ApplicationUser> signInManager
+@model VmBook
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+@section Head{
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".liedit").click(function() {
+                var BookId = $(this).parents().eq(3).find(".BookId").text();
+
+                $.ajax({
+                    type: 'get',
+                    url: '/BookStore/Book/EditAjax?Id=' + BookId,
+                    success: function(data) {
+                        debugger;
+                        $("#Id").val(data.id);
+                        $("#Imagepath").val(data.imagepath);
+                        $("#txtBookTitle").val(data.bookTitle);
+                        $("#yearpicker").val(data.year);
+                        $("#txtPrice").val(data.price);
+                        $("#liCategory").val(data.category_Id);
+                        $("#liAuthors").val(data.authors_Id);
+                        $("#txtStock").val(data.stock);
+                        $("#txtDescription").val(data.description);
+                    },
+                    error: function() {
+                        alert('error')
+                    }
+                });
+                $("#save").hide();
+                $("#update").show();
+                $("#exampleModal").modal('show');
+            });
+
+            $('#NewBook').click(function() {
+                $("#Id").val("");
+                $("#Imagepath").val("");
+                $("#txtBookTitle").val("");
+                $("#yearpicker").val("");
+                $("#txtPrice").val("");
+                $("#liCategory").val("");
+                $("#liAuthors").val("");
+                $("#txtStock").val("");
+                $("#txtDescription").val("");
+
+                $("#save").show();
+                $("#update").hide();
+                $("#exampleModal").modal('show');
+
+            });
+        });
+
+    </script>
+}
+    @section Body{
+    <form method="post" enctype="multipart/form-data">
+        <section class="page-section" style="margin-top:25px;padding-top:10px;" id="portfolio">
+            <div class="container-fluid">
+                @*<button type="button" class="btn btn-primary btn-lg text-uppercase" data-bs-toggle="modal" data-bs-target="#exampleModal">New Book</button>*@
+                <div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Book</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Book Title:</label>
+                                            <input type="text" id="txtBookTitle" class="form-control" asp-for="book.BookTitle">
+                                            <span asp-validation-for="book.BookTitle"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Year:</label>
+                                            <select class="form-select" id="yearpicker" asp-for="book.Year">
+                                                <option>Select Year</option>
+                                            </select>
+                                            <span asp-validation-for="book.Year"></span>
+                                            <script type="text/javascript"
+                                                src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+
+                                            </script>
+                                            <script type="text/javascript">
+                                                let startYear = 1500;
+                                                let endYear = new Date().getFullYear();
+                                                for (i = endYear; i > startYear; i--) {
+                                                    $('#yearpicker').append($('<option />').val(i).html(i));
+                                                }
+                                            </script>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Price:</label>
+                                            <input type="number" id="txtPrice" class="form-control" asp-for="book.Price">
+                                            <span asp-validation-for="book.Price"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Category:</label>
+                                            <select class="form-select" id="liCategory" asp-items='new SelectList(Model.licategory,"Id","Name")' asp-for="book.Category_Id">
+                                                <option>Select Category</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Authors:</label>
+                                            <select class="form-select" id="liAuthors" asp-items='new SelectList(Model.liauthors,"Id","FirstName")' asp-for="book.Authors_Id">
+                                                <option>Select Authors</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Stock:</label>
+                                            <input type="number" id="txtStock" class="form-control" asp-for="book.Stock">
+                                            <span asp-validation-for="book.Stock"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Description:</label>
+                                            <textarea class="form-control" id="txtDescription" asp-for="book.Description"></textarea>
+                                            <span asp-validation-for="book.Description"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Cover Photo:</label>
+
+                                            <input type="file" id="fu1" style="display:none" asp-for="book.Image" />
+                                            <label class="btn btn-primary" style="width:100% !important" for="fu1">Choose Photo</label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    @*@if ((bool)ViewData["isEdting"] == false)
+                                {*@
+                                    <button type="submit" id="save" class="btn btn-primary" asp-action="Save">Save</button>
+                                    @*  }
+                                else
+                                {*@
+                                    <button type="submit" id="update" class="btn btn-primary" asp-action="Update" style="display:none">Update</button>
+                                    <input type="hidden" id="Id" asp-for="book.Id" />
+                                    <input type="hidden" id="Imagepath" asp-for="book.Imagepath" />
+                                    @*  }*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i id="NewBook" class="fas fa-table me-1"></i>
+                        New Book
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover table-striped" style="margin-top:50px">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cover Photo</th>
+                                    <th>Book Title</th>
+                                    <th>Year</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
+                                    <th>Authors</th>
+                                    <th>Stock</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Book item in Model.liabook)
+                                {
+                                    <tr>
+                                        <td class="BookId">@item.Id</td>
+                                        <td><img src='@item.Imagepath' style="width:80px ;height:80px" /></td>
+                                        <td>@item.BookTitle</td>
+                                        <td>@item.Year</td>
+                                        <td>@item.Price</td>
+                                        <td>@item.Category.Name</td>
+                                        <td>@item.Authors.FirstName @item.Authors.LastName</td>
+                                        <td>@item.Stock</td>
+                                        <td>@item.Description</td>
+                                        <td>
+                                            <ul class="list-inline m-0">
+                                                <li class="list-inline-item">
+                                                    <a class="liedit btn btn-success btn-sm rounded-0"><i class="fa fa-edit"></i></a>
+                                                </li>
+                                                <li class="list-inline-item" style="margin-top:15px">
+                                                    <button class="btn btn-danger btn-sm rounded-0" type="submit" data-toggle="tooltip" data-placement="top" title="Delete" asp-action="Delete" asp-route-Id="@item.Id"><i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+}

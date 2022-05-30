@@ -1,0 +1,138 @@
+﻿@model VmCategory
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+@section Head{
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".liedit").click(function() {
+                var CategoryId = $(this).parents().eq(3).find(".CategoryId").text();
+
+                $.ajax({
+                    type: 'get',
+                    url: '/BookStore/Category/EditAjax?Id=' + CategoryId,
+                    success: function(data) {
+                        debugger;
+                        $("#Id").val(data.id);
+                        $("#txtCatCode").val(data.catCode);
+                        $("#txtCatName").val(data.name);
+                        $("#txtCatDescription").val(data.description);
+                    },
+                    error: function() {
+                        alert('error')
+                    }
+                });
+                $("#save").hide();
+                $("#update").show();
+                $("#exampleModal").modal('show');
+            });
+
+            $('#NewCategory').click(function() {
+                $("#Id").val("");
+                $("#txtCatCode").val("");
+                $("#txtCatName").val("");
+                $("#txtCatDescription").val("");
+
+                $("#save").show();
+                $("#update").hide();
+                $("#exampleModal").modal('show');
+
+            });
+        });
+
+    </script>
+}
+    @section Body{
+    <form method="post">
+        <section class="page-section" style="margin-top:25px;padding-top:10px;">
+            <div class="container-fluid">
+                <div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" style="margin-top:155px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Category Code:</label>
+                                            <input type="text" class="form-control" id="txtCatCode" asp-for="category.CatCode">
+                                             <span asp-validation-for="category.CatCode"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Category Name:</label>
+                                            <input type="text" class="form-control" id="txtCatName" asp-for="category.Name">
+                                             <span asp-validation-for="category.Name"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Description:</label>
+                                            <textarea class="form-control" id="txtCatDescription" asp-for="category.Description"></textarea>
+                                             <span asp-validation-for="category.Description"></span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    @*@if ((bool)ViewData["isEdting"] == false)
+                                {*@
+                                    <button type="submit" id="save" class="btn btn-primary" asp-action="Save">Save</button>
+                                    @*}
+                                else
+                                {*@
+                                    <button type="submit" id="update" class="btn btn-primary" asp-action="Update" style="display:none">Update</button>
+                                    <input type="hidden" id="Id" asp-for="category.Id" />
+                                    @* }*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i id="NewCategory" class="fas fa-table me-1"></i>
+                        New Category
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover table-striped" style="margin-top:50px">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Category Code</th>
+                                    <th>Category Name</th>
+                                    <th>Description</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Category item in Model.licategory)
+                                {
+                                    <tr>
+                                        <td class="CategoryId">@item.Id</td>
+                                        <td>@item.CatCode</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Description</td>
+                                        <td>
+                                            <ul class="list-inline m-0">
+                                                <li class="list-inline-item">
+                                                    <a class="liedit btn btn-success btn-sm rounded-0"><i class="fa fa-edit"></i></a>
+                                                </li>
+                                                <li class="list-inline-item" style="margin-top:15px">
+                                                    <button class="btn btn-danger btn-sm rounded-0" type="submit" data-toggle="tooltip" data-placement="top" title="Delete" asp-action="Delete" asp-route-Id="@item.Id"><i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+}

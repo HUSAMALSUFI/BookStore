@@ -1,0 +1,130 @@
+﻿@model VmCountry
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+@section Head{
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".liedit").click(function() {
+                var CountryId = $(this).parents().eq(3).find(".CountryId").text();
+
+                $.ajax({
+                    type: 'get',
+                    url: '/BookStore/Country/EditAjax?Id=' + CountryId,
+                    success: function(data) {
+                        debugger;
+                        $("#Id").val(data.id);
+                        $("#txtName").val(data.name);
+                        $("#txtNationality").val(data.nationality);
+
+                    },
+                    error: function() {
+                        alert('error')
+                    }
+                });
+                $("#save").hide();
+                $("#update").show();
+                $("#exampleModal").modal('show');
+            });
+
+            $('#NewCountry').click(function() {
+                $("#Id").val("");
+                $("#txtName").val("");
+                $("#txtNationality").val("");
+
+                $("#save").show();
+                $("#update").hide();
+                $("#exampleModal").modal('show');
+
+            });
+        });
+
+    </script>
+}
+    @section Body{
+    <form method="post">
+        <section class="page-section" style="margin-top:25px;padding-top:10px;">
+            <div class="container-fluid">
+                <div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" style="margin-top:155px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">New Country</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Country Name:</label>
+                                            <input type="text" class="form-control" id="txtName" asp-for="country.Name">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Nationality Name:</label>
+                                            <input type="text" class="form-control" id="txtNationality" asp-for="country.Nationality">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    @*@if ((bool)ViewData["isEdting"] == false)
+                                {*@
+                                    <button type="submit" id="save" class="btn btn-primary" asp-action="Save">Save</button>
+                                    @* }
+                                else
+                                {*@
+                                    <button type="submit" id="update" class="btn btn-primary" asp-action="Update" style="display:none">Update</button>
+                                    <input type="hidden" id="Id" asp-for="country.Id" />
+                                    @*}*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i id="NewCountry" class="fas fa-table me-1"></i>
+                        New Country
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover table-striped" style="margin-top:50px">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Image</th>
+                                    <th>Country Name</th>
+                                    <th>Nationality</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Country item in Model.licountry)
+                                {
+                                    <tr>
+                                        <td class="CountryId">@item.Id</td>
+                                        <td><img class="mx-auto rounded-circle" src="~/Images/Country.png" alt="..." style="width:80px;height:80px;" /></td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Nationality</td>
+                                        <td>
+                                            <ul class="list-inline m-0">
+                                                <li class="list-inline-item">
+                                                    <a class="liedit btn btn-success btn-sm rounded-0"><i class="fa fa-edit"></i></a>
+                                                </li>
+                                                <li class="list-inline-item" style="margin-top:15px">
+                                                    <button class="btn btn-danger btn-sm rounded-0" type="submit" data-toggle="tooltip" data-placement="top" title="Delete" asp-action="Delete" asp-route-Id="@item.Id"><i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+}

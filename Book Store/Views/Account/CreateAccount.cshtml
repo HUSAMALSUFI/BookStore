@@ -1,0 +1,85 @@
+﻿@model SignUpViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Book Dashboard</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../wwwroot/Images/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="~/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+    <header class="masthead">
+    </header>
+    <!-- Section: Design Block -->
+    <section class="page-section text-center">
+        <div class="card mx-4 mx-md-5 shadow-5-strong" style="
+        margin-top: -200px;
+        background: hsla(0, 0%, 100%, 0.8);
+        backdrop-filter: blur(30px);
+        ">
+            <div class="card-body py-5 px-md-5">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-8">
+                        <h2 class="fw-bold mb-5">Sign Up Now</h2>
+                        <form method="post">
+                            <!-- Name input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" style="float:left">Name</label>
+                                <input type="text" class="form-control" asp-for="signUpModel.Name" />
+                                <span asp-validation-for="signUpModel.Name"></span>
+                            </div>
+                            <!-- Email input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" style="float:left">Email</label>
+                                <input type="email" class="form-control" asp-for="signUpModel.Email" />
+                                <span asp-validation-for="signUpModel.Email"></span>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="col-form-label" style="float:left">Role:</label>
+                                <select class="form-select" asp-items='new SelectList(Model.liRoles,"Id","Name")' asp-for="signUpModel.RoleId">
+                                    <option>Select Role</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control" asp-for="signUpModel.Password" />
+                                        <span asp-validation-for="signUpModel.Password"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label">ConfirmPassword</label>
+                                        <input type="password" class="form-control" asp-for="signUpModel.ConfirmPassword" />
+                                        <span asp-validation-for="signUpModel.ConfirmPassword"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block mb-4" asp-action="CreateAccount">
+                                Sign Up
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

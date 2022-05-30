@@ -1,0 +1,160 @@
+﻿@model VmAuthors
+@{
+    Layout = "~/Views/Shared/LayoutPage.cshtml";
+}
+@section Head{
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".liedit").click(function() {
+                var AuthorsId = $(this).parents().eq(3).find(".AuthorsId").text();
+
+                $.ajax({
+                    type: 'get',
+                    url: '/BookStore/Authors/EditAjax?Id=' + AuthorsId,
+                    success: function(data) {
+                        debugger;
+                        $("#Id").val(data.id);
+                        $("#Imagepath").val(data.imagepath);
+                        $("#txtFirstName").val(data.firstName);
+                        $("#txtLastName").val(data.lastName);
+                        $("#txtJobTitle").val(data.jobTitle);
+                        $("#liNationality").val(data.country_Id);
+                    },
+                    error: function() {
+                        alert('error')
+                    }
+                });
+                $("#save").hide();
+                $("#update").show();
+                $("#exampleModal").modal('show');
+            });
+
+            $('#NewAuthors').click(function() {
+                $("#Id").val("");
+                $("#Imagepath").val("");
+                $("#txtFirstName").val("");
+                $("#txtLastName").val("");
+                $("#txtJobTitle").val("");
+                $("#liNationality").val("");
+
+                $("#save").show();
+                $("#update").hide();
+                $("#exampleModal").modal('show');
+
+            });
+        });
+
+    </script>
+}
+    @section Body{
+    <form method="post" enctype="multipart/form-data">
+        <section class="page-section" style="margin-top:25px;padding-top:10px;">
+            <div class="container-fluid">
+                @*<button type="button" class="btn btn-primary btn-lg text-uppercase" data-bs-toggle="modal" data-bs-target="#exampleModal">New Authors</button>*@
+                <div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" style="margin-top:155px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Authors</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">First Name:</label>
+                                            <input type="text" class="form-control" id="txtFirstName" asp-for="authors.FirstName">
+                                             <span asp-validation-for="authors.FirstName"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Last Name:</label>
+                                            <input type="text" class="form-control" id="txtLastName" asp-for="authors.LastName">
+                                             <span asp-validation-for="authors.LastName"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Job Title:</label>
+                                            <input type="text" class="form-control" id="txtJobTitle" asp-for="authors.JobTitle">
+                                             <span asp-validation-for="authors.JobTitle"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Nationality:</label>
+                                            <select id="liNationality" class="form-select" asp-items='new SelectList(Model.licountry,"Id","Nationality")' asp-for="authors.Country_Id">
+                                                <option>Select Nationality</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="col-form-label" style="float:left">Photo:</label>
+
+                                            <input type="file" id="fu1" style="display:none" asp-for="authors.Image" />
+                                            <label class="btn btn-primary" style="width:100% !important" for="fu1">Upload Photo</label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    @* @if ((bool)ViewData["isEdting"] == false)
+                                {*@
+                                    <button type="submit" id="save" class="btn btn-primary" asp-action="Save">Save</button>
+                                    @*}
+                                else
+                                {*@
+                                    <button type="submit" id="update" class="btn btn-primary" asp-action="Update" style="display:none">Update</button>
+                                    <input type="hidden" id="Id" asp-for="authors.Id" />
+                                    <input type="hidden" id="Imagepath" asp-for="authors.Imagepath" />
+                                    @*}*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i id="NewAuthors" class="fas fa-table me-1"></i>
+                        New Authors
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover table-striped" style="margin-top:50px">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Image</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>JobTitle</th>
+                                    <th>Nationality</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Authors item in Model.liauthors)
+                                {
+                                    <tr>
+                                        <td class="AuthorsId">@item.Id</td>
+                                        <td><img src='@item.Imagepath' style="width:80px ;height:80px" /></td>
+                                        <td>@item.FirstName</td>
+                                        <td>@item.LastName</td>
+                                        <td>@item.JobTitle</td>
+                                        <td>@item.country.Nationality</td>
+                                        <td>
+                                            <ul class="list-inline m-0">
+                                                <li class="list-inline-item">
+                                                    <a class="liedit btn btn-success btn-sm rounded-0"><i class="fa fa-edit"></i></a>
+                                                </li>
+                                                <li class="list-inline-item" style="margin-top:15px">
+                                                    <button class="btn btn-danger btn-sm rounded-0" type="submit" data-toggle="tooltip" data-placement="top" title="Delete" asp-action="Delete" asp-route-Id="@item.Id"><i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+}
